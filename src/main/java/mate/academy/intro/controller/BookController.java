@@ -1,9 +1,8 @@
 package mate.academy.intro.controller;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.BookDto;
 import mate.academy.intro.dto.CreateBookRequestDto;
@@ -51,7 +50,8 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public void updateById(@PathVariable @Valid Long id, @RequestBody CreateBookRequestDto bookDto) {
+    public void updateById(@PathVariable @Valid Long id,
+                           @RequestBody CreateBookRequestDto bookDto) {
         bookService.updateById(id, bookDto);
     }
 }
