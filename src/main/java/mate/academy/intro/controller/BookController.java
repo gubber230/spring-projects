@@ -1,7 +1,7 @@
 package mate.academy.intro.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.BookDto;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
@@ -30,9 +31,8 @@ public class BookController {
         return bookService.findAll();
     }
 
-    @Validated
     @GetMapping("/{id}")
-    public BookDto getBookById(@PathVariable @Min(0) Long id) {
+    public BookDto getBookById(@PathVariable @Positive Long id) {
         return bookService.findById(id);
     }
 
@@ -42,16 +42,15 @@ public class BookController {
         return bookService.save(bookDto);
     }
 
-    @Validated
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable @Min(0) Long id) {
+    public void deleteById(@PathVariable @Positive Long id) {
         bookService.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public void updateById(@PathVariable @Valid Long id,
-                           @RequestBody CreateBookRequestDto bookDto) {
+    public void updateById(@PathVariable @Positive Long id,
+                           @RequestBody @Valid CreateBookRequestDto bookDto) {
         bookService.updateById(id, bookDto);
     }
 }
