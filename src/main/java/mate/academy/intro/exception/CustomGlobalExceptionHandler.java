@@ -45,4 +45,11 @@ public class CustomGlobalExceptionHandler {
         return new ResponseEntity<>(
                 "Constraint violation exception occurred", HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<String> handleRegistrationException(
+            RegistrationException ex) {
+        return new ResponseEntity<>(
+                "Registration exception occurred", HttpStatus.BAD_REQUEST);
+    }
 }
