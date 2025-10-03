@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 07-insert-books
+      author: Rostyslav
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column: {name: title, value: "The Midnight Library"}
+              - column: {name: author, value: "Matt Haig"}
+              - column: {name: isbn, value: "978-0525555438"}
+              - column: {name: price, value: "15.99"}
+              - column: {name: description, value: "A novel about a library between life and death."}
+              - column: {name: cover_image, value: "/images/midnight.jpg"}
+              - column: {name: is_deleted, valueBoolean: false}
+        - insert:
+            tableName: books
+            columns:
+              - column: {name: title, value: "Where the Crawdads Sing"}
+              - column: {name: author, value: "Delia Owens"}
+              - column: {name: isbn, value: "978-0735219113"}
+              - column: {name: price, value: "12.50"}
+              - column: {name: description, value: "A mesmerizing mystery, a survival story, and a coming-of-age tale."}
+              - column: {name: cover_image, value: "/images/crawdads.jpg"}
+              - column: {name: is_deleted, valueBoolean: false}
+        - insert:
+            tableName: books
+            columns:
+              - column: {name: title, value: "Project Hail Mary"}
+              - column: {name: author, value: "Andy Weir"}
+              - column: {name: isbn, value: "978-0593135204"}
+              - column: {name: price, value: "18.00"}
+              - column: {name: description, value: "A lone astronaut races to save the earth."}
+              - column: {name: cover_image, value: "/images/hailmary.jpg"}
+              - column: {name: is_deleted, valueBoolean: false}

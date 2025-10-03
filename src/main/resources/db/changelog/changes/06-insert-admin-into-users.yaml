@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 06-insert-admin-into-users
+      author: Rostyslav
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: email, value: 'admin@example.com' }
+              - column: { name: password, value: '$2a$10$jyKVIdQq6ejTu6znoey.KOloID/B96gKnkt7zMd3AENvB3S89a5Ui' }
+              - column: { name: first_name, value: 'admin' }
+              - column: { name: last_name, value: 'admin' }
+              - column: { name: shipping_address, value: 'none' }
+        - sql:
+            sql: |
+              INSERT INTO users_roles (user_id, role_id)
+              VALUES (
+                  (SELECT id FROM users WHERE email = 'admin@example.com'),
+                  (SELECT id FROM roles WHERE role = 'ADMIN')
+              );
