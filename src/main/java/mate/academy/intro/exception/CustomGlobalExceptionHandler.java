@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -51,5 +52,12 @@ public class CustomGlobalExceptionHandler {
             RegistrationException ex) {
         return new ResponseEntity<>(
                 "Registration exception occurred", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String> handleAuthorizationDeniedException(
+            AuthorizationDeniedException ex) {
+        return new ResponseEntity<>(
+                "Authorization denied", HttpStatus.FORBIDDEN);
     }
 }
