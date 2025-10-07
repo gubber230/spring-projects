@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/changes/06-insert-admin-into-users.yaml
   - include:
       file: db/changelog/changes/07-insert-books.yaml
+  - include:
+      file: db/changelog/changes/08-add-column-isdeleted.yaml

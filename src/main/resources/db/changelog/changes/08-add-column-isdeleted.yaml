@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 08-add-column-isdeleted
+      author: Rostyslav
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - sql:
+            dbms: mysql, h2
+            sql: UPDATE users SET is_deleted = FALSE WHERE is_deleted IS NULL;
