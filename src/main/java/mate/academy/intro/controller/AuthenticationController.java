@@ -4,13 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mate.academy.intro.dto.UserLoginRequestDto;
+import mate.academy.intro.dto.UserLoginResponseDto;
 import mate.academy.intro.dto.UserRegistrationRequestDto;
 import mate.academy.intro.dto.UserResponseDto;
 import mate.academy.intro.exception.RegistrationException;
 import mate.academy.intro.lib.annotations.FieldMatch;
+import mate.academy.intro.security.AuthenticationService;
 import mate.academy.intro.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
+
+    @GetMapping("/login")
+    @Operation(summary = "Return JWT token if successful")
+    public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
+        return authenticationService.authenticate(requestDto);
+    }
 
     @PostMapping("/registration")
     @Operation(summary = "Registered a new user")
