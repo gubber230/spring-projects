@@ -31,8 +31,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @GetMapping("/login")
-    @Operation(summary = "Return JWT token if successful")
-    public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
+    @Operation(summary = "Login user")
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
         return authenticationService.authenticate(requestDto);
     }
 
