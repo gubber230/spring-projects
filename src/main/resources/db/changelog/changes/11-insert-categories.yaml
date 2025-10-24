@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 11-insert-categories
+      author: Rostyslav
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: 'name', value: 'Fiction' }
+              - column: { name: 'description', value: 'Imaginative narrative, especially in prose form.' }
+              - column: { name: 'is_deleted', valueBoolean: false }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: 'name', value: 'Contemporary' }
+              - column: { name: 'description', value: 'Set in the modern world, reflecting current times.' }
+              - column: { name: 'is_deleted', valueBoolean: false }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: 'name', value: 'Science Fiction' }
+              - column: { name: 'description', value: 'Based on imagined future scientific or technological advances.' }
+              - column: { name: 'is_deleted', valueBoolean: false }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: 'name', value: 'Mystery' }
+              - column: { name: 'description', value: 'Involves solving a crime or a puzzle.' }
+              - column: { name: 'is_deleted', valueBoolean: false }
+        - insert:
+            tableName: categories
+            columns:
+              - column: { name: 'name', value: 'Thriller' }
+              - column: { name: 'description', value: 'Characterized by suspense, anxiety, and excitement.' }
+              - column: { name: 'is_deleted', valueBoolean: false }

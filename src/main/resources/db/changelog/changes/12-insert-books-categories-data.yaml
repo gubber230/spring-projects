@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 12-insert-books-categories-data
+      author: Rostyslav
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO books_categories (books_id, categories_id)
+              VALUES
+              (
+                  (SELECT id FROM books WHERE isbn = '978-0525555438'),
+                  (SELECT id FROM categories WHERE name = 'Fiction')
+              ),
+              (
+                  (SELECT id FROM books WHERE isbn = '978-0525555438'),
+                  (SELECT id FROM categories WHERE name = 'Contemporary')
+              ),
+              (
+                  (SELECT id FROM books WHERE isbn = '978-0735219113'),
+                  (SELECT id FROM categories WHERE name = 'Fiction')
+              ),
+              (
+                  (SELECT id FROM books WHERE isbn = '978-0735219113'),
+                  (SELECT id FROM categories WHERE name = 'Mystery')
+              ),
+              (
+                  (SELECT id FROM books WHERE isbn = '978-0593135204'),
+                  (SELECT id FROM categories WHERE name = 'Science Fiction')
+              );
