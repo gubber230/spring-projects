@@ -1,8 +1,8 @@
 package mate.academy.intro.service;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
+import mate.academy.intro.dto.external.CreateBookRequestDto;
 import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.BookMapper;
 import mate.academy.intro.model.Book;
