@@ -11,6 +11,8 @@ import mate.academy.intro.model.Role;
 import mate.academy.intro.model.User;
 import mate.academy.intro.repository.RoleRepository;
 import mate.academy.intro.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,5 +41,11 @@ public class UserServiceImpl implements UserService {
                         "Can not find role in database: " + ROLE_NAME));
         user.setRoles(Set.of(userRole));
         return userMapper.toDto(userRepository.save(user));
+    }
+
+    @Override
+    public Page<UserResponseDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
     }
 }

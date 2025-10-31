@@ -7,6 +7,7 @@ import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.BookMapper;
 import mate.academy.intro.model.Book;
 import mate.academy.intro.repository.BookRepository;
+import mate.academy.intro.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
     public BookDto save(CreateBookRequestDto requestDto) {
-        Book book = bookMapper.toModel(requestDto);
+        Book book = bookMapper.toEntity(requestDto, categoryRepository);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
@@ -51,7 +53,13 @@ public class BookServiceImpl implements BookService {
     public void updateById(Long id, CreateBookRequestDto requestDto) {
         Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find book with Id: " + id));
-        bookMapper.updateBookFromDto(requestDto, book);
+        bookMapper.updateBookFromDto(book, requestDto, categoryRepository);
         bookRepository.save(book);
+    }
+
+    @Override
+    public Page<BookDto> findByCategory(Long categoryId, Pageable pageable) {
+        return bookRepository.findAllByCategoryId(categoryId, pageable)
+                .map(bookMapper::toDto);
     }
 }
