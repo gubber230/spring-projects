@@ -26,5 +26,5 @@ public class CartItem {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 }

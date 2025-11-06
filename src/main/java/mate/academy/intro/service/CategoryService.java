@@ -1,7 +1,7 @@
 package mate.academy.intro.service;
 
+import mate.academy.intro.dto.external.CategoryCreateRequestDto;
 import mate.academy.intro.dto.internal.CategoryDto;
-import mate.academy.intro.dto.external.CreateCategoryRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,9 +10,9 @@ public interface CategoryService {
 
     CategoryDto getById(Long id);
 
-    CategoryDto save(CreateCategoryRequestDto categoryDto);
+    CategoryDto save(CategoryCreateRequestDto categoryDto);
 
-    void updateById(Long id, CreateCategoryRequestDto categoryDto);
+    void updateById(Long id, CategoryCreateRequestDto categoryDto);
 
     void deleteById(Long id);
 }

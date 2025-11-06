@@ -1,8 +1,8 @@
 package mate.academy.intro.mapper;
 
 import mate.academy.intro.config.MapperConfig;
+import mate.academy.intro.dto.external.CategoryCreateRequestDto;
 import mate.academy.intro.dto.internal.CategoryDto;
-import mate.academy.intro.dto.external.CreateCategoryRequestDto;
 import mate.academy.intro.model.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,10 +14,10 @@ public interface CategoryMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    Category toEntity(CreateCategoryRequestDto categoryDto);
+    Category toEntity(CategoryCreateRequestDto categoryDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     void updateEntityFromDto(@MappingTarget Category category,
-                             CreateCategoryRequestDto categoryDto);
+                             CategoryCreateRequestDto categoryDto);
 }

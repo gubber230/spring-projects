@@ -1,12 +1,13 @@
-package mate.academy.intro.service;
+package mate.academy.intro.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import mate.academy.intro.dto.external.CategoryCreateRequestDto;
 import mate.academy.intro.dto.internal.CategoryDto;
-import mate.academy.intro.dto.external.CreateCategoryRequestDto;
 import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.CategoryMapper;
 import mate.academy.intro.model.Category;
 import mate.academy.intro.repository.CategoryRepository;
+import mate.academy.intro.service.CategoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,14 +38,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto save(CreateCategoryRequestDto categoryDto) {
+    public CategoryDto save(CategoryCreateRequestDto categoryDto) {
         Category entity = categoryMapper.toEntity(categoryDto);
         return categoryMapper.toDto(categoryRepository.save(entity));
     }
 
     @Override
     @Transactional
-    public void updateById(Long id, CreateCategoryRequestDto categoryDto) {
+    public void updateById(Long id, CategoryCreateRequestDto categoryDto) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find category with Id: " + id)
         );

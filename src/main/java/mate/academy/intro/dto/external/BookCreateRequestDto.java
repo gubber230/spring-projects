@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record CreateBookRequestDto(
+public record BookCreateRequestDto(
         @NotBlank
         String title,
         @NotBlank
