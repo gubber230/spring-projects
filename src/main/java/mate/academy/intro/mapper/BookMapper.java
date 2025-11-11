@@ -7,7 +7,6 @@ import mate.academy.intro.dto.internal.BookDto;
 import mate.academy.intro.dto.internal.BookDtoWithoutCategoryIds;
 import mate.academy.intro.model.Book;
 import mate.academy.intro.model.Category;
-import mate.academy.intro.repository.BookRepository;
 import mate.academy.intro.repository.CategoryRepository;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
@@ -31,11 +30,6 @@ public interface BookMapper {
     void updateBookFromDto(@MappingTarget Book book,
                            BookCreateRequestDto requestDto,
                            @Context CategoryRepository categoryRepository);
-
-    @Named("bookFromId")
-    default Book bookFromId(Long id, @Context BookRepository bookRepository) {
-        return id == null ? null : bookRepository.getReferenceById(id);
-    }
 
     @Named("idFromBook")
     default Long idFromBook(Book book) {
@@ -62,7 +56,7 @@ public interface BookMapper {
     default void setCategories(BookCreateRequestDto bookDto,
                                @MappingTarget Book book,
                                @Context CategoryRepository categoryRepository
-                               ) {
+    ) {
         if (bookDto.categoryIds() != null) {
             book.setCategories(
                     bookDto.categoryIds().stream()

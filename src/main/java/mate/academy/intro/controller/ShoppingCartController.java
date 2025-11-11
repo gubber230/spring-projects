@@ -9,6 +9,7 @@ import mate.academy.intro.dto.external.CartItemCreateRequestDto;
 import mate.academy.intro.dto.external.CartItemUpdateRequestDto;
 import mate.academy.intro.dto.internal.CartItemDto;
 import mate.academy.intro.dto.internal.ShoppingCartDto;
+import mate.academy.intro.mapper.ShoppingCartMapper;
 import mate.academy.intro.model.User;
 import mate.academy.intro.service.CartItemService;
 import mate.academy.intro.service.ShoppingCartService;
@@ -34,16 +35,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
     private final CartItemService cartItemService;
+    private final ShoppingCartMapper shoppingCartMapper;
 
     @GetMapping
+    @Operation(summary = "Get shopping cart")
     public ShoppingCartDto getShoppingCart(@AuthenticationPrincipal User user) {
         if (user == null) {
             throw new AccessDeniedException("User must be logged in to view cart.");
         }
-        return shoppingCartService.getOrCreateCart(user.getId());
+        return shoppingCartMapper.toDto(shoppingCartService.getOrCreateCart(user.getId()));
     }
 
     @PostMapping
+    @Operation(summary = "Add book to cart")
     public CartItemDto addBookToCart(@RequestBody @Valid CartItemCreateRequestDto requestDto,
                                      @AuthenticationPrincipal User user) {
         return cartItemService.addCartItem(requestDto, user.getId());
@@ -52,17 +56,17 @@ public class ShoppingCartController {
     @PutMapping("/items/{cartItemId}")
     @Operation(summary = "Update book quantity")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateBookQuantity(@PathVariable @Positive Long bookId,
+    public void updateBookQuantity(@PathVariable @Positive Long cartItemId,
                                    @RequestBody @Valid CartItemUpdateRequestDto requestDto,
                                    @AuthenticationPrincipal User user) {
-        cartItemService.updateQuantityById(bookId, requestDto, user.getId());
+        cartItemService.updateQuantityById(cartItemId, requestDto, user.getId());
     }
 
     @DeleteMapping("/items/{cartItemId}")
     @Operation(summary = "Remove book from cart")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeBookFromCart(@PathVariable @Positive Long id,
+    public void removeBookFromCart(@PathVariable @Positive Long cartItemId,
                                    @AuthenticationPrincipal User user) {
-        cartItemService.deleteById(id, user.getId());
+        cartItemService.deleteById(cartItemId, user.getId());
     }
 }
