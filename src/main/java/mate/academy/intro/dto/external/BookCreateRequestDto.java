@@ -2,6 +2,7 @@ package mate.academy.intro.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public record BookCreateRequestDto(
         BigDecimal price,
         String description,
         String coverImage,
+        @NotEmpty
         Set<Long> categoryIds
 ) {
 }
