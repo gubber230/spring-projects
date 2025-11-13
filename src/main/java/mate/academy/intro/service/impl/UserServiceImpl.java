@@ -1,9 +1,9 @@
-package mate.academy.intro.service;
+package mate.academy.intro.service.impl;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import mate.academy.intro.dto.UserRegistrationRequestDto;
-import mate.academy.intro.dto.UserResponseDto;
+import mate.academy.intro.dto.external.UserRegistrationRequestDto;
+import mate.academy.intro.dto.external.UserResponseDto;
 import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.exception.RegistrationException;
 import mate.academy.intro.mapper.UserMapper;
@@ -11,6 +11,7 @@ import mate.academy.intro.model.Role;
 import mate.academy.intro.model.User;
 import mate.academy.intro.repository.RoleRepository;
 import mate.academy.intro.repository.UserRepository;
+import mate.academy.intro.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
                     "Email has been taken"
             );
         }
-        User user = userMapper.toModel(requestDto);
+        User user = userMapper.toEntity(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
         Role userRole = roleRepository.findByRole(ROLE_NAME)
                 .orElseThrow(() -> new EntityNotFoundException(

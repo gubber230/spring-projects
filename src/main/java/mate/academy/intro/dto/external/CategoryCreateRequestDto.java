@@ -1,8 +1,8 @@
-package mate.academy.intro.dto;
+package mate.academy.intro.dto.external;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record CreateCategoryRequestDto(
+public record CategoryCreateRequestDto(
         @NotBlank
         String name,
         String description

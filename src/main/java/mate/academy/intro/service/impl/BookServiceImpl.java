@@ -1,13 +1,14 @@
-package mate.academy.intro.service;
+package mate.academy.intro.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.external.BookCreateRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
 import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.BookMapper;
 import mate.academy.intro.model.Book;
 import mate.academy.intro.repository.BookRepository;
 import mate.academy.intro.repository.CategoryRepository;
+import mate.academy.intro.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDto save(CreateBookRequestDto requestDto) {
+    public BookDto save(BookCreateRequestDto requestDto) {
         Book book = bookMapper.toEntity(requestDto, categoryRepository);
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -50,7 +51,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void updateById(Long id, CreateBookRequestDto requestDto) {
+    public void updateById(Long id, BookCreateRequestDto requestDto) {
         Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can't find book with Id: " + id));
         bookMapper.updateBookFromDto(book, requestDto, categoryRepository);

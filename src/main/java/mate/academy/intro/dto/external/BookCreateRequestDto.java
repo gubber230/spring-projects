@@ -1,4 +1,4 @@
-package mate.academy.intro.dto;
+package mate.academy.intro.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record CreateBookRequestDto(
+public record BookCreateRequestDto(
         @NotBlank
         String title,
         @NotBlank

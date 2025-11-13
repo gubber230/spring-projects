@@ -1,12 +1,12 @@
 package mate.academy.intro.service;
 
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.external.BookCreateRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    BookDto save(CreateBookRequestDto requestDto);
+    BookDto save(BookCreateRequestDto requestDto);
 
     BookDto findById(Long id);
 
@@ -14,7 +14,7 @@ public interface BookService {
 
     void deleteById(Long id);
 
-    void updateById(Long id, CreateBookRequestDto bookDto);
+    void updateById(Long id, BookCreateRequestDto bookDto);
 
     Page<BookDto> findByCategory(Long categoryId, Pageable pageable);
 }

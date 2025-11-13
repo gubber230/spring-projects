@@ -2,9 +2,9 @@ package mate.academy.intro.mapper;
 
 import java.util.stream.Collectors;
 import mate.academy.intro.config.MapperConfig;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.BookDtoWithoutCategoryIds;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.external.BookCreateRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
+import mate.academy.intro.dto.internal.BookDtoWithoutCategoryIds;
 import mate.academy.intro.model.Book;
 import mate.academy.intro.model.Category;
 import mate.academy.intro.repository.CategoryRepository;
@@ -22,12 +22,12 @@ public interface BookMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    Book toEntity(CreateBookRequestDto requestDto, @Context CategoryRepository categoryRepository);
+    Book toEntity(BookCreateRequestDto requestDto, @Context CategoryRepository categoryRepository);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     void updateBookFromDto(@MappingTarget Book book,
-                           CreateBookRequestDto requestDto,
+                           BookCreateRequestDto requestDto,
                            @Context CategoryRepository categoryRepository);
 
     @AfterMapping
@@ -42,10 +42,10 @@ public interface BookMapper {
     }
 
     @AfterMapping
-    default void setCategories(CreateBookRequestDto bookDto,
+    default void setCategories(BookCreateRequestDto bookDto,
                                @MappingTarget Book book,
                                @Context CategoryRepository categoryRepository
-                               ) {
+    ) {
         if (bookDto.categoryIds() != null) {
             book.setCategories(
                     bookDto.categoryIds().stream()

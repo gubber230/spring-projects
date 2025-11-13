@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.CategoryDto;
-import mate.academy.intro.dto.CreateCategoryRequestDto;
+import mate.academy.intro.dto.external.CategoryCreateRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
+import mate.academy.intro.dto.internal.CategoryDto;
 import mate.academy.intro.service.BookService;
 import mate.academy.intro.service.CategoryService;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create a new category")
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryRequestDto requestDto) {
+    public CategoryDto createCategory(@RequestBody @Valid CategoryCreateRequestDto requestDto) {
         return categoryService.save(requestDto);
     }
 
@@ -64,7 +64,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update the details of a category")
     public void updateCategoryById(@PathVariable @Positive Long id,
-                                   @RequestBody @Valid CreateCategoryRequestDto requestDto) {
+                                   @RequestBody @Valid CategoryCreateRequestDto requestDto) {
         categoryService.updateById(id, requestDto);
     }
 
