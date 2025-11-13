@@ -63,7 +63,6 @@ public class CategoryController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update the details of a category")
-    @ResponseStatus(HttpStatus.CREATED)
     public void updateCategoryById(@PathVariable @Positive Long id,
                                    @RequestBody @Valid CategoryCreateRequestDto requestDto) {
         categoryService.updateById(id, requestDto);

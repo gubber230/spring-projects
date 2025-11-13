@@ -7,14 +7,11 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.external.CartItemCreateRequestDto;
 import mate.academy.intro.dto.external.CartItemUpdateRequestDto;
-import mate.academy.intro.dto.internal.CartItemDto;
 import mate.academy.intro.dto.internal.ShoppingCartDto;
 import mate.academy.intro.mapper.ShoppingCartMapper;
 import mate.academy.intro.model.User;
-import mate.academy.intro.service.CartItemService;
 import mate.academy.intro.service.ShoppingCartService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,32 +31,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cart")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
-    private final CartItemService cartItemService;
     private final ShoppingCartMapper shoppingCartMapper;
 
     @GetMapping
     @Operation(summary = "Get shopping cart")
     public ShoppingCartDto getShoppingCart(@AuthenticationPrincipal User user) {
-        if (user == null) {
-            throw new AccessDeniedException("User must be logged in to view cart.");
-        }
-        return shoppingCartMapper.toDto(shoppingCartService.getOrCreateCart(user.getId()));
+        return shoppingCartMapper.toDto(shoppingCartService.getOrCreateCart(user));
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Add book to cart")
-    public CartItemDto addBookToCart(@RequestBody @Valid CartItemCreateRequestDto requestDto,
-                                     @AuthenticationPrincipal User user) {
-        return cartItemService.addCartItem(requestDto, user.getId());
+    public ShoppingCartDto addBookToCart(@RequestBody @Valid CartItemCreateRequestDto requestDto,
+                                         @AuthenticationPrincipal User user) {
+        return shoppingCartService.addCartItem(requestDto, user);
     }
 
     @PutMapping("/items/{cartItemId}")
     @Operation(summary = "Update book quantity")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateBookQuantity(@PathVariable @Positive Long cartItemId,
-                                   @RequestBody @Valid CartItemUpdateRequestDto requestDto,
-                                   @AuthenticationPrincipal User user) {
-        cartItemService.updateQuantityById(cartItemId, requestDto, user.getId());
+    public ShoppingCartDto updateBookQuantity(@PathVariable @Positive Long cartItemId,
+                                              @RequestBody @Valid CartItemUpdateRequestDto dto,
+                                              @AuthenticationPrincipal User user) {
+        return shoppingCartService.updateQuantityById(cartItemId, dto, user);
     }
 
     @DeleteMapping("/items/{cartItemId}")
@@ -67,6 +61,6 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookFromCart(@PathVariable @Positive Long cartItemId,
                                    @AuthenticationPrincipal User user) {
-        cartItemService.deleteById(cartItemId, user.getId());
+        shoppingCartService.deleteById(cartItemId, user);
     }
 }

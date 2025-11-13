@@ -10,14 +10,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(config = MapperConfig.class, uses = {BookMapper.class})
+@Mapper(config = MapperConfig.class)
 public interface CartItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "shoppingCart", ignore = true)
     CartItem toEntity(CartItemCreateRequestDto cartItemDto, Book book);
 
-    @Mapping(target = "bookId", source = "book", qualifiedByName = "idFromBook")
-    @Mapping(target = "bookTitle", source = "book", qualifiedByName = "titleFromBook")
+    @Mapping(source = "book.id", target = "bookId")
+    @Mapping(source = "book.title", target = "bookTitle")
     CartItemDto toDto(CartItem cartItem);
 
     @Mapping(target = "id", ignore = true)

@@ -7,8 +7,9 @@ import jakarta.validation.constraints.Positive;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record CartItemCreateRequestDto(
         @NotNull
+        @Positive
         Long bookId,
         @Positive
-        Integer quantity
+        int quantity
 ) {
 }

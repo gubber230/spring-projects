@@ -13,7 +13,6 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
@@ -30,16 +29,6 @@ public interface BookMapper {
     void updateBookFromDto(@MappingTarget Book book,
                            BookCreateRequestDto requestDto,
                            @Context CategoryRepository categoryRepository);
-
-    @Named("idFromBook")
-    default Long idFromBook(Book book) {
-        return book == null ? null : book.getId();
-    }
-
-    @Named("titleFromBook")
-    default String titleFromBook(Book book) {
-        return book == null ? null : book.getTitle();
-    }
 
     @AfterMapping
     default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
