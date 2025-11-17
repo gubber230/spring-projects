@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 15-update-shopping-carts-table-for-mapsid
+      author: Rostyslav
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: shopping_carts
+            constraintName: FK_SHOPPING_CART_USER
+
+        - dropColumn:
+            tableName: shopping_carts
+            columnName: user_id

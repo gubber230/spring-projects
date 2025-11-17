@@ -11,6 +11,7 @@ import mate.academy.intro.model.Role;
 import mate.academy.intro.model.User;
 import mate.academy.intro.repository.RoleRepository;
 import mate.academy.intro.repository.UserRepository;
+import mate.academy.intro.service.ShoppingCartService;
 import mate.academy.intro.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService cartService;
 
     @Override
     @Transactional
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can not find role in database: " + ROLE_NAME));
         user.setRoles(Set.of(userRole));
+        cartService.createShoppingCart(user);
         return userMapper.toDto(userRepository.save(user));
     }
 

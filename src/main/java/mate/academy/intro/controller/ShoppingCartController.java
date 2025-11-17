@@ -36,7 +36,7 @@ public class ShoppingCartController {
     @GetMapping
     @Operation(summary = "Get shopping cart")
     public ShoppingCartDto getShoppingCart(@AuthenticationPrincipal User user) {
-        return shoppingCartMapper.toDto(shoppingCartService.getOrCreateCart(user));
+        return shoppingCartService.getShoppingCart(user.getId());
     }
 
     @PostMapping
@@ -44,7 +44,7 @@ public class ShoppingCartController {
     @Operation(summary = "Add book to cart")
     public ShoppingCartDto addBookToCart(@RequestBody @Valid CartItemCreateRequestDto requestDto,
                                          @AuthenticationPrincipal User user) {
-        return shoppingCartService.addCartItem(requestDto, user);
+        return shoppingCartService.addCartItem(requestDto, user.getId());
     }
 
     @PutMapping("/items/{cartItemId}")
@@ -53,7 +53,7 @@ public class ShoppingCartController {
     public ShoppingCartDto updateBookQuantity(@PathVariable @Positive Long cartItemId,
                                               @RequestBody @Valid CartItemUpdateRequestDto dto,
                                               @AuthenticationPrincipal User user) {
-        return shoppingCartService.updateQuantityById(cartItemId, dto, user);
+        return shoppingCartService.updateQuantityById(cartItemId, dto, user.getId());
     }
 
     @DeleteMapping("/items/{cartItemId}")
@@ -61,6 +61,6 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeBookFromCart(@PathVariable @Positive Long cartItemId,
                                    @AuthenticationPrincipal User user) {
-        shoppingCartService.deleteById(cartItemId, user);
+        shoppingCartService.deleteById(cartItemId, user.getId());
     }
 }

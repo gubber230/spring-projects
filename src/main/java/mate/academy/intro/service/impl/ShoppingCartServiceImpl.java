@@ -1,7 +1,6 @@
 package mate.academy.intro.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.external.CartItemCreateRequestDto;
 import mate.academy.intro.dto.external.CartItemUpdateRequestDto;
@@ -16,10 +15,10 @@ import mate.academy.intro.repository.BookRepository;
 import mate.academy.intro.repository.CartItemRepository;
 import mate.academy.intro.repository.ShoppingCartRepository;
 import mate.academy.intro.service.ShoppingCartService;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -30,66 +29,69 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public ShoppingCart getOrCreateCart(User user) {
-        Optional<ShoppingCart> existingCart = shoppingCartRepository.findById(user.getId());
-        if (existingCart.isPresent()) {
-            return existingCart.get();
-        }
+    public void createShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
-        shoppingCart.setId(user.getId());
         shoppingCartRepository.save(shoppingCart);
-        return shoppingCart;
     }
 
-    @Transactional
     @Override
-    public ShoppingCartDto addCartItem(CartItemCreateRequestDto requestDto, User user) {
-        ShoppingCart cart = getOrCreateCart(user);
+    public ShoppingCartDto getShoppingCart(Long userId) {
+        return shoppingCartMapper.toDto(shoppingCartRepository.getReferenceById(userId));
+    }
+
+    @Override
+    public ShoppingCartDto addCartItem(CartItemCreateRequestDto requestDto, Long userId) {
+        ShoppingCart shoppingCart = shoppingCartRepository.getReferenceById(userId);
         Book book = bookRepository.findById(requestDto.bookId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Book with this id not exist or was deleted. Id: " + requestDto.bookId()));
-        CartItem newItem = cartItemMapper.toEntity(requestDto, book);
-        Optional<CartItem> checkForDuplicates =
-                cartItemRepository.findByBookIdAndShoppingCartId(
-                        newItem.getBook().getId(), cart.getId());
-        if (checkForDuplicates.isPresent()) {
-            CartItem existingItem = checkForDuplicates.get();
-            existingItem.setQuantity(newItem.getQuantity() + existingItem.getQuantity());
-            cartItemRepository.save(existingItem);
-            return shoppingCartMapper.toDto(cart);
+        CartItem cartItem = cartItemMapper.toEntity(requestDto, book);
+        var optionalCartItem = cartItemRepository.findByBookIdAndShoppingCartId(
+                book.getId(), shoppingCart.getId());
+        if (optionalCartItem.isPresent()) {
+            updateQuantityById(
+                    optionalCartItem.get().getId(),
+                    new CartItemUpdateRequestDto(
+                            optionalCartItem.get().getQuantity() + requestDto.quantity()),
+                    shoppingCart.getId());
+            return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
         }
-        cart.addCartItem(newItem);
-        cartItemRepository.save(newItem);
-        return shoppingCartMapper.toDto(cart);
+        addCartItemToCart(requestDto, book, shoppingCart);
+        return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
+    }
+
+    private void addCartItemToCart(
+            CartItemCreateRequestDto requestDto,
+            Book book,
+            ShoppingCart cart) {
+        CartItem cartItem = cartItemMapper.toEntity(requestDto, book);
+        cartItem.setBook(book);
+        cart.addCartItem(cartItem);
     }
 
     @Override
     public ShoppingCartDto updateQuantityById(Long cartItemId,
-                                              CartItemUpdateRequestDto requestDto,
-                                              User user) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                                              CartItemUpdateRequestDto dto,
+                                              Long userId) {
+        ShoppingCart shoppingCart = shoppingCartRepository.getReferenceById(userId);
+        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(
+                cartItemId, shoppingCart.getId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Item not found with id: " + cartItemId));
-        if (!cartItem.getShoppingCart().getUser().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You are not authorized to update this cart item.");
-        }
-        cartItemMapper.updateQuantity(cartItem, requestDto);
+        cartItemMapper.updateQuantity(cartItem, dto);
         cartItemRepository.save(cartItem);
-        ShoppingCart shoppingCartEager = shoppingCartRepository.findByIdFullyLoaded(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Shopping cart not found for user."));
-        return shoppingCartMapper.toDto(shoppingCartEager);
+        return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
     }
 
     @Override
-    public void deleteById(Long cartItemId, User user) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+    public void deleteById(Long cartItemId, Long userId) {
+        ShoppingCart shoppingCart = shoppingCartRepository.getReferenceById(userId);
+        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(
+                cartItemId, shoppingCart.getId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Item not found with id: " + cartItemId));
-        if (!cartItem.getShoppingCart().getUser().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You are not authorized to update this cart item.");
-        }
         cartItemRepository.delete(cartItem);
+        shoppingCartRepository.save(shoppingCart);
     }
 }
