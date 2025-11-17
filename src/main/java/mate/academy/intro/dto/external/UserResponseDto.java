@@ -1,4 +1,4 @@
-package mate.academy.intro.dto;
+package mate.academy.intro.dto.external;
 
 public record UserResponseDto(
         Long id,

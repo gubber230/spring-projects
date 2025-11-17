@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.external.BookCreateRequestDto;
+import mate.academy.intro.dto.internal.BookDto;
 import mate.academy.intro.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +50,7 @@ public class BookController {
     @Operation(summary = "Create book")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookDto) {
+    public BookDto createBook(@RequestBody @Valid BookCreateRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
@@ -66,7 +66,7 @@ public class BookController {
     @Operation(summary = "Update book by id")
     @PreAuthorize("hasRole('ADMIN')")
     public void updateById(@PathVariable @Positive Long id,
-                           @RequestBody @Valid CreateBookRequestDto bookDto) {
+                           @RequestBody @Valid BookCreateRequestDto bookDto) {
         bookService.updateById(id, bookDto);
     }
 }

@@ -1,4 +1,4 @@
-package mate.academy.intro.dto;
+package mate.academy.intro.dto.internal;
 
 import java.math.BigDecimal;
 
