@@ -61,15 +61,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartMapper.toDto(shoppingCartRepository.save(shoppingCart));
     }
 
-    private void addCartItemToCart(
-            CartItemCreateRequestDto requestDto,
-            Book book,
-            ShoppingCart cart) {
-        CartItem cartItem = cartItemMapper.toEntity(requestDto, book);
-        cartItem.setBook(book);
-        cart.addCartItem(cartItem);
-    }
-
     @Override
     public ShoppingCartDto updateQuantityById(Long cartItemId,
                                               CartItemUpdateRequestDto dto,
@@ -93,5 +84,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         new EntityNotFoundException("Item not found with id: " + cartItemId));
         cartItemRepository.delete(cartItem);
         shoppingCartRepository.save(shoppingCart);
+    }
+
+    private void addCartItemToCart(
+            CartItemCreateRequestDto requestDto,
+            Book book,
+            ShoppingCart cart) {
+        CartItem cartItem = cartItemMapper.toEntity(requestDto, book);
+        cartItem.setBook(book);
+        cart.addCartItem(cartItem);
     }
 }
