@@ -20,10 +20,10 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "shopping_carts")
-@Getter
-@Setter
 @SQLDelete(sql = "UPDATE shopping_carts SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
+@Getter
+@Setter
 @NoArgsConstructor
 public class ShoppingCart {
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
