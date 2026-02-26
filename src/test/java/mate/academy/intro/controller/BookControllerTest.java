@@ -1,6 +1,9 @@
 package mate.academy.intro.controller;
 
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,8 +15,6 @@ import java.math.BigDecimal;
 import java.util.Set;
 import mate.academy.intro.dto.external.BookCreateRequestDto;
 import mate.academy.intro.dto.internal.BookDto;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class BookControllerTest {
     @DisplayName("Create new book")
     void createBook_ValidRequestDto_Created() throws Exception {
         BookCreateRequestDto requestDto = new BookCreateRequestDto(
-                "title", "author", "isbn", BigDecimal.valueOf(11.99),
+                "title", "author", "isbn", new BigDecimal("11.99"),
                 null, null, Set.of(1L, 2L)
         );
 
@@ -67,7 +68,9 @@ public class BookControllerTest {
 
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
-        EqualsBuilder.reflectionEquals(expected, actual);
+
+
+        assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
     @Sql(scripts = {"classpath:database/book/clear-books.sql",
@@ -94,8 +97,8 @@ public class BookControllerTest {
         JsonNode treePage = objectMapper.readTree(result.getResponse().getContentAsString());
         BookDto[] actualBooks = objectMapper.treeToValue(treePage.get("content"), BookDto[].class);
 
-        Assertions.assertEquals(expectedLength, actualBooks.length);
-        Assertions.assertEquals(expectedTitle, actualBooks[0].getTitle());
+        assertEquals(expectedLength, actualBooks.length);
+        assertEquals(expectedTitle, actualBooks[0].getTitle());
     }
 
     @Sql(scripts = {"classpath:database/book/clear-books.sql",
@@ -117,12 +120,18 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String expectedTitle = "Book1";
+        BookDto expected = new BookDto()
+                .setId(1L)
+                .setTitle("Book1")
+                .setAuthor("Author1")
+                .setIsbn("1")
+                .setPrice(new BigDecimal("10.00"))
+                .setCategoryIds(Set.of(1L));
 
         BookDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), BookDto.class);
 
-        Assertions.assertEquals(expectedTitle, actual.getTitle());
+        assertTrue(reflectionEquals(expected, actual));
     }
 
     @Sql(scripts = {"classpath:database/book/clear-books.sql",

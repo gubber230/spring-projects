@@ -1,7 +1,6 @@
 package mate.academy.intro.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import mate.academy.intro.dto.external.CategoryCreateRequestDto;
 import mate.academy.intro.dto.internal.CategoryDto;
+import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.CategoryMapper;
 import mate.academy.intro.model.Category;
 import mate.academy.intro.repository.CategoryRepository;
@@ -36,7 +36,7 @@ public class CategoryServiceTest {
     private CategoryServiceImpl categoryService;
 
     @Test
-    @DisplayName("Verify findAll() method works")
+    @DisplayName("Verify findAll() returns all categories")
     public void findAll_ValidPageable_ReturnsAllCategories() {
         Category category = new Category();
         category.setName("Horror");
@@ -58,12 +58,12 @@ public class CategoryServiceTest {
         assertThat(categoryDtos).hasSize(1);
         assertThat(categoryDtos.get(0)).isEqualTo(categoryDto);
 
-        verify(categoryRepository, times(1)).findAll(pageable);
+        verify(categoryRepository).findAll(pageable);
         verifyNoMoreInteractions(categoryMapper, categoryRepository);
     }
 
     @Test
-    @DisplayName("Verify getById() method works")
+    @DisplayName("Verify getById() returns category by id")
     public void getById_ValidId_ReturnsCategoryById() {
         Category category = new Category();
         category.setName("Horror");
@@ -82,7 +82,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Verify save() method works")
+    @DisplayName("Verify save() saves and returns category")
     public void save_ValidRequestDto_SavesEntityAndReturnsDto() {
         CategoryCreateRequestDto requestDto =
                 new CategoryCreateRequestDto("Horror", "Scary movie");
@@ -102,7 +102,77 @@ public class CategoryServiceTest {
         CategoryDto savedCategoryDto = categoryService.save(requestDto);
 
         assertThat(savedCategoryDto).isEqualTo(categoryDto);
-        verify(categoryRepository, times(1)).save(category);
+        verify(categoryRepository).save(category);
+        verifyNoMoreInteractions(categoryRepository, categoryMapper);
+    }
+    @Test
+    @DisplayName("Verify getById() throws exception when category not found")
+    public void getById_InvalidId_ThrowsEntityNotFoundException() {
+        Long invalidId = 100L;
+        when(categoryRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        Exception exception = Assertions.assertThrows(
+                EntityNotFoundException.class,
+                () -> categoryService.getById(invalidId)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Can't find category by id: "
+                + invalidId);
+        verify(categoryRepository).findById(invalidId);
+        verifyNoMoreInteractions(categoryRepository, categoryMapper);
+    }
+
+    @Test
+    @DisplayName("Verify updateById() updates existing category")
+    public void updateById_ValidIdAndDto_UpdatesCategory() {
+        Long id = 1L;
+        CategoryCreateRequestDto requestDto =
+                new CategoryCreateRequestDto("Action", "Exciting movies");
+
+        Category existingCategory = new Category();
+        existingCategory.setId(id);
+        existingCategory.setName("Old Name");
+        existingCategory.setDescription("Old Description");
+
+        when(categoryRepository.findById(id)).thenReturn(Optional.of(existingCategory));
+
+        categoryService.updateById(id, requestDto);
+
+        verify(categoryRepository).findById(id);
+        verify(categoryMapper).updateEntityFromDto(existingCategory, requestDto);
+        verify(categoryRepository).save(existingCategory);
+        verifyNoMoreInteractions(categoryRepository, categoryMapper);
+    }
+
+    @Test
+    @DisplayName("Verify updateById() throws exception when category not found")
+    public void updateById_InvalidId_ThrowsEntityNotFoundException() {
+        Long invalidId = 100L;
+        CategoryCreateRequestDto requestDto =
+                new CategoryCreateRequestDto("Action", "Exciting movies");
+
+        when(categoryRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        Exception exception = Assertions.assertThrows(
+                EntityNotFoundException.class,
+                () -> categoryService.updateById(invalidId, requestDto)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Can't find category with Id: "
+                + invalidId);
+
+        verify(categoryRepository).findById(invalidId);
+        verifyNoMoreInteractions(categoryRepository, categoryMapper);
+    }
+
+    @Test
+    @DisplayName("Verify deleteById() calls repository delete method")
+    public void deleteById_ValidId_DeletesCategory() {
+        Long id = 1L;
+
+        categoryService.deleteById(id);
+
+        verify(categoryRepository).deleteById(id);
         verifyNoMoreInteractions(categoryRepository, categoryMapper);
     }
 }

@@ -1,5 +1,9 @@
 package mate.academy.intro.controller;
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,9 +49,7 @@ public class CategoryControllerTest {
                 "name", "description"
         );
 
-        CategoryDto expected = new CategoryDto(
-                1L, requestDto.name(), requestDto.description()
-        );
+
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -60,7 +62,12 @@ public class CategoryControllerTest {
 
         CategoryDto actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), CategoryDto.class);
-        EqualsBuilder.reflectionEquals(expected, actual);
+
+        CategoryDto expected = new CategoryDto(
+                anyLong(), requestDto.name(), requestDto.description()
+        );
+
+        assertTrue(reflectionEquals(expected, actual, "id"));
     }
 
     @Sql(scripts = {"classpath:database/category/clear-categories.sql",
@@ -85,8 +92,8 @@ public class CategoryControllerTest {
         CategoryDto[] actualCategories = objectMapper.treeToValue(
                 treePage.get("content"), CategoryDto[].class);
 
-        Assertions.assertEquals(expectedLength, actualCategories.length);
-        Assertions.assertEquals(expectedName, actualCategories[0].name());
+        assertEquals(expectedLength, actualCategories.length);
+        assertEquals(expectedName, actualCategories[0].name());
     }
 
     @Sql(scripts = {"classpath:database/category/clear-categories.sql",
@@ -114,7 +121,7 @@ public class CategoryControllerTest {
         CategoryDto[] actualDtos = objectMapper.treeToValue(
                 readTree.get("content"), CategoryDto[].class);
 
-        Assertions.assertEquals(expectedLength, actualDtos.length);
+        assertEquals(expectedLength, actualDtos.length);
     }
 
     @Sql(scripts = {"classpath:database/book/clear-books.sql",
@@ -140,6 +147,6 @@ public class CategoryControllerTest {
         JsonNode readTree = objectMapper.readTree(result.getResponse().getContentAsString());
         BookDto[] actualDtos = objectMapper.treeToValue(readTree.get("content"), BookDto[].class);
 
-        Assertions.assertEquals(expectedLength, actualDtos.length);
+        assertEquals(expectedLength, actualDtos.length);
     }
 }
