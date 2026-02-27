@@ -1,5 +1,10 @@
 package mate.academy.intro.service;
 
+import static mate.academy.intro.util.TestDataHelper.createOldBookForUpdate;
+import static mate.academy.intro.util.TestDataHelper.createUpdatedBookRequestDto;
+import static mate.academy.intro.util.TestDataHelper.createValidBook;
+import static mate.academy.intro.util.TestDataHelper.createValidBookDto;
+import static mate.academy.intro.util.TestDataHelper.createValidBookRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -17,6 +22,7 @@ import mate.academy.intro.model.Book;
 import mate.academy.intro.repository.BookRepository;
 import mate.academy.intro.repository.CategoryRepository;
 import mate.academy.intro.service.impl.BookServiceImpl;
+import mate.academy.intro.util.TestDataHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,15 +49,7 @@ public class BookServiceTest {
     @Test
     @DisplayName("Verify save() method saves and returns book")
     public void save_ValidRequestDto_SavesEntityAndReturnsDto() {
-        BookCreateRequestDto requestDto = new BookCreateRequestDto(
-                "Title",
-                "Author",
-                "ISBN-123",
-                new BigDecimal("19.99"),
-                "Description",
-                "image.jpg",
-                Set.of(1L, 2L)
-        );
+        BookCreateRequestDto requestDto = createValidBookRequestDto();
 
         Book book = new Book()
                 .setTitle(requestDto.title())
@@ -76,10 +74,7 @@ public class BookServiceTest {
     @Test
     @DisplayName("Verify findById() returns book by id")
     public void findById_ValidId_ReturnsBookById() {
-        Book book = new Book()
-                .setId(1L)
-                .setTitle("Title")
-                .setAuthor("Author");
+        Book book = createValidBook();
 
         BookDto actual = new BookDto()
                 .setId(1L)
@@ -114,14 +109,9 @@ public class BookServiceTest {
     @Test
     @DisplayName("Verify findAll() returns all books")
     public void findAll_ValidPageable_ReturnsAllBooks() {
-        Book book = new Book()
-                .setTitle("Title")
-                .setAuthor("Author");
+        Book book = createValidBook();
 
-        BookDto bookDto = new BookDto()
-                .setId(1L)
-                .setTitle(book.getTitle())
-                .setAuthor(book.getAuthor());
+        BookDto bookDto = createValidBookDto();
 
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(book);
@@ -153,13 +143,9 @@ public class BookServiceTest {
     @DisplayName("Verify updateById() updates existing book")
     public void updateById_ValidIdAndDto_UpdatesBook() {
         Long id = 1L;
-        BookCreateRequestDto requestDto = new BookCreateRequestDto(
-                "Updated Title", "Updated Author",
-                "ISBN-123", new BigDecimal("19.99"),
-                "Description", "image.jpg", Set.of(1L)
-        );
+        BookCreateRequestDto requestDto = createUpdatedBookRequestDto();
 
-        Book existingBook = new Book().setId(id).setTitle("Old Title").setAuthor("Old Author");
+        Book existingBook = createOldBookForUpdate();
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(existingBook));
 
@@ -175,15 +161,7 @@ public class BookServiceTest {
     @DisplayName("Verify updateById() throws exception when book not found")
     public void updateById_InvalidId_ThrowsEntityNotFoundException() {
         Long invalidId = 100L;
-        BookCreateRequestDto requestDto = new BookCreateRequestDto(
-                "Updated Title",
-                "Updated Author",
-                "ISBN-123",
-                new BigDecimal("19.99"),
-                "Description",
-                "image.jpg",
-                Set.of(1L)
-        );
+        BookCreateRequestDto requestDto = createUpdatedBookRequestDto();
 
         when(bookRepository.findById(invalidId)).thenReturn(Optional.empty());
 
@@ -202,14 +180,9 @@ public class BookServiceTest {
     @DisplayName("Verify findByCategory() returns books mapped to a category")
     public void findByCategory_ValidCategoryIdAndPageable_ReturnsBooks() {
         Long categoryId = 1L;
-        Book book = new Book()
-                .setTitle("Title")
-                .setAuthor("Author");
+        Book book = createValidBook();
 
-        BookDto bookDto = new BookDto()
-                .setId(1L)
-                .setTitle(book.getTitle())
-                .setAuthor(book.getAuthor());
+        BookDto bookDto = createValidBookDto();
 
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(book);
