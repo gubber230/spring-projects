@@ -3,12 +3,20 @@
 ## 1. Introduction
 This project is a RESTful API built with Spring Boot 3 for a comprehensive Book Store application. It features secure JWT-based authentication, a MySQL database configured via Docker, and functionalities for managing books, categories, shopping carts, and user orders. The application is fully containerized and includes interactive API documentation powered by Swagger/OpenAPI.
 
-## 2. Setup and Installation
+## 2. Tech Stack
+* **Java:** 17
+* **Spring Boot:** 3.5.4
+* **MySQL:** 9.6.0
+* **JJWT (JSON Web Token):** 0.12.7
+* **MapStruct:** 1.6.3
+* **Springdoc OpenAPI (Swagger):** 2.8.13
+* **Hibernate Validator:** 8.0.1.Final
+* **Testcontainers:** 2.0.3
+* **Liquibase:** Managed by Spring Boot
+* **Lombok:** Managed by Spring Boot
+* **Docker & Docker Compose:** Managed by Spring Boot
 
-### Prerequisites
-* Java 17
-* Maven 3.8+
-* Docker and Docker Compose
+## 3. Setup and Installation
 
 ### Clone
 ```bash
@@ -47,7 +55,7 @@ docker-compose up --build -d
 * **Swagger UI:** `http://localhost:8088/swagger-ui/index.html`
 * **API Docs (JSON):** `http://localhost:8088/v3/api-docs`
 
-## 3. API Endpoints
+## 4. API Endpoints
 
 ### Authentication
 * **[GET]** `/auth/login` - Login user
@@ -80,3 +88,7 @@ docker-compose up --build -d
 * **[POST]** `/cart` - Add book to cart
 * **[PUT]** `/cart/items/{cartItemId}` - Update book quantity
 * **[DELETE]** `/cart/items/{cartItemId}` - Remove book from cart
+
+## 5. Entity-Relationship Diagram
+
+![img.png](img.png)

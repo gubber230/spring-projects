@@ -3,7 +3,6 @@ package mate.academy.intro.controller;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,8 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mate.academy.intro.dto.external.CategoryCreateRequestDto;
 import mate.academy.intro.dto.internal.BookDto;
 import mate.academy.intro.dto.internal.CategoryDto;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +47,6 @@ public class CategoryControllerTest {
         );
 
 
-
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         MvcResult result = mockMvc.perform(
@@ -64,7 +60,7 @@ public class CategoryControllerTest {
                 result.getResponse().getContentAsString(), CategoryDto.class);
 
         CategoryDto expected = new CategoryDto(
-                anyLong(), requestDto.name(), requestDto.description()
+                1L, requestDto.name(), requestDto.description()
         );
 
         assertTrue(reflectionEquals(expected, actual, "id"));
