@@ -12,17 +12,17 @@ This project is a RESTful API built with Spring Boot 3 for a comprehensive Book 
 
 ### Clone
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone https://github.com/gubber230/spring-projects.git
+cd spring-projects
 ```
 
 ### Environment Variables
 Create a `.env` file in the root directory of the project using the following template:
 
 ```env
-MYSQLDB_USER=bookstore_user
-MYSQLDB_ROOT_PASSWORD=12345678
-MYSQLDB_DATABASE=db
+MYSQLDB_USER=user
+MYSQLDB_ROOT_PASSWORD=password
+MYSQLDB_DATABASE=database
 MYSQLDB_LOCAL_PORT=3307
 MYSQLDB_DOCKER_PORT=3306
 
